@@ -37,7 +37,6 @@ class SmseaseServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->publishes([__DIR__ . '/../config/easysms.php' => $this->app->basePath('config/easysms.php')]);
-            $this->publishes([__DIR__ . '/../routes/easysms.php' => $this->app->basePath('routes/easysms.php')]);
         }
     }
 
