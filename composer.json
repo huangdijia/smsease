@@ -40,6 +40,11 @@
     "extra": {
         "hyperf": {
             "config": "Huangdijia\\Smsease\\ConfigProvider"
+        },
+        "laravel": {
+            "providers": [
+                "Huangdijia\\Smsease\\SmseaseServiceProvider"
+            ]
         }
     },
     "scripts": {
