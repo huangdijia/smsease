@@ -20,22 +20,57 @@ return [
 
         // 默认可用的发送网关
         'gateways' => [
-            'yunpian', 'aliyun',
+            'aliyun',
         ],
     ],
     // 可用的网关配置
     'gateways' => [
-        'errorlog' => [
-            'file' => '/tmp/easy-sms.log',
-        ],
-        'yunpian' => [
-            'api_key' => '824f0ff2f71cab52936axxxxxxxxxx',
-        ],
         'aliyun' => [
-            'access_key_id' => '',
-            'access_key_secret' => '',
+            'access_key_id' => env('ALIYUN_ACCESS_KEY', ''),
+            'access_key_secret' => env('ALIYUN_ACCESS_SECRET', ''),
             'sign_name' => '',
         ],
-        //...
+        'accessyou' => [
+            'account' => env('ACCESSYOU_ACCOUNT', ''),
+            'password' => env('ACCESSYOU_PASSWORD', ''),
+            'check_user' => env('ACCESSYOU_CHECK_USER', ''),
+            'check_password' => env('ACCESSYOU_CHECK_PASSWORD', ''),
+            'sign_name' => '',
+        ],
+        'micht' => [
+            'username' => env('MICHT_USERNAME', ''),
+            'password' => env('MICHT_PASSWORD', ''),
+            'encoding' => env('MICHT_ENCODING', 'big5'),
+            'sign_name' => '',
+        ],
+        'mitake' => [
+            'username' => env('MITAKE_USERNAME', ''),
+            'password' => env('MITAKE_PASSWORD', ''),
+            'encoding' => env('MITAKE_ENCODING', 'big5'),
+            'sign_name' => '',
+        ],
+        'mxtong' => [
+            'user_id' => env('MXTONG_USER_ID', ''),
+            'account' => env('MXTONG_ACCOUNT', ''),
+            'password' => env('MXTONG_PASSWORD', ''),
+            'send_type' => 1,
+            'post_fix_number' => 1,
+            'sign_name' => '',
+        ],
+        'smspro' => [
+            'username' => env('SMSPRO_USERNAME', ''),
+            'password' => env('SMSPRO_PASSWORD', ''),
+            'sender' => env('SMSPRO_SENDER', ''),
+            'sign_name' => '',
+        ],
+        'twsms' => [
+            'account' => env('TWSMS_ACCOUNT', ''),
+            'password' => env('TWSMS_PASSWORD', ''),
+            'type' => env('TWSMS_TYPE', 'now'),
+            'encoding' => env('TWSMS_ENCODING', 'big5'),
+            'vldtime' => env('TWSMS_VLDTIME', ''),
+            'dlvtime' => env('TWSMS_DLVTIME', ''),
+            'sign_name' => '',
+        ],
     ],
 ];
