@@ -79,18 +79,9 @@ class AliyunGateway extends Gateway
 
             return $result->toArray();
         } catch (ClientException $e) {
-            throw new GatewayErrorException($e->getErrorMessage(), 0, ['result' => $result]);
+            throw new GatewayErrorException($e->getErrorMessage(), 0, ['exception' => $e]);
         } catch (ServerException $e) {
-            throw new GatewayErrorException($e->getErrorMessage(), 0, ['result' => $result]);
+            throw new GatewayErrorException($e->getErrorMessage(), 0, ['exception' => $e]);
         }
-    }
-
-    /**
-     * Get the info of account.
-     * @return array
-     */
-    public function info()
-    {
-        return [];
     }
 }

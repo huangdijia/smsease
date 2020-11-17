@@ -22,7 +22,7 @@ class Response
     protected $response;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $decoded;
 
@@ -96,7 +96,7 @@ class Response
         }
 
         if (stripos($contentType, 'xml') !== false) {
-            return json_decode(json_encode(@simplexml_load_string($contents)), true);
+            return json_decode(json_encode(@simplexml_load_string($contents, 'SimpleXMLElement', LIBXML_NOWARNING)), true);
         }
 
         throw new RuntimeException('Response Content_Type is not json or xml');

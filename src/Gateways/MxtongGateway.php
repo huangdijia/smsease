@@ -68,20 +68,18 @@ class MxtongGateway extends Gateway
             'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
 
-        $result = $response->json();
-
-        if (! $result) {
+        if (! $response->json()) {
             throw new GatewayErrorException('Parse xml failed', 402, ['response' => $response]);
         }
 
-        if (! isset($result['RetCode']) || $result['RetCode'] != self::SUCCESS_CODE) {
-            throw new GatewayErrorException($result['Message'], 402, ['response' => $response]);
+        if ($response->json('RetCode') != self::SUCCESS_CODE) {
+            throw new GatewayErrorException($response->json('Message'), 402, ['response' => $response]);
         }
 
-        if (isset($result['OKPhoneCounts']) && $result['OKPhoneCounts'] == 0) {
-            throw new GatewayErrorException($result['Message'], 403, ['response' => $response]);
+        if ($response->json('OKPhoneCounts') == 0) {
+            throw new GatewayErrorException($response->json('Message'), 403, ['response' => $response]);
         }
 
-        return $result;
+        return $response->json();
     }
 }

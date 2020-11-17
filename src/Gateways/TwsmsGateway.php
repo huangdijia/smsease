@@ -30,8 +30,7 @@ class TwsmsGateway extends Gateway
     // const ENDPOINT_URL = 'http://api.twsms.com/send.php';
     const ENDPOINT_URL = 'http://api.twsms.com/json/sms_send.php';
 
-    protected $errCodes = [
-        // Code 碼    說明
+    protected static $errCodes = [
         '00000' => '完成',
         '00001' => '狀態尚未回復',
         '00010' => '帳號或密碼格式錯誤',
