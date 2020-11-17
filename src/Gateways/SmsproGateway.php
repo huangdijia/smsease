@@ -11,14 +11,14 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Smsease\Gateways;
 
-use Throwable;
-use Overtrue\EasySms\Support\Config;
-use Overtrue\EasySms\Gateways\Gateway;
-use Psr\Http\Message\ResponseInterface;
-use Overtrue\EasySms\Traits\HasHttpRequest;
+use Huangdijia\Smsease\Traits\HasHttpRequest;
 use Overtrue\EasySms\Contracts\MessageInterface;
 use Overtrue\EasySms\Contracts\PhoneNumberInterface;
 use Overtrue\EasySms\Exceptions\GatewayErrorException;
+use Overtrue\EasySms\Gateways\Gateway;
+use Overtrue\EasySms\Support\Config;
+use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 class SmsproGateway extends Gateway
 {
@@ -64,7 +64,7 @@ class SmsproGateway extends Gateway
             'Sender' => $config->get('sender'),
         ];
 
-        /** @var array|ResponseInterface */
+        /** @var array|ResponseInterface|string $response */
         $response = $this->post(self::ENDPOINT_URL, $params, [
             'Content-Type' => 'application/x-www-form-urlencoded',
         ]);

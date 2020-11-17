@@ -40,7 +40,7 @@ class BootApplicationListener implements ListenerInterface
     public function process(object $event)
     {
         /** @var \Hyperf\Di\Container */
-        $container = \Hyperf\Utils\ApplicationContext::getcontainer();
+        $container = \Hyperf\Utils\ApplicationContext::getContainer();
         /** @var ConfigInterface $config */
         $config = $container->get(ConfigInterface::class);
 
@@ -62,7 +62,5 @@ class BootApplicationListener implements ListenerInterface
                 return new TwsmsGateway($config);
             });
         }));
-
-        exit;
     }
 }

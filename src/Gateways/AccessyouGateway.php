@@ -11,12 +11,12 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Smsease\Gateways;
 
+use Huangdijia\Smsease\Traits\HasHttpRequest;
 use Overtrue\EasySms\Contracts\MessageInterface;
 use Overtrue\EasySms\Contracts\PhoneNumberInterface;
 use Overtrue\EasySms\Exceptions\GatewayErrorException;
 use Overtrue\EasySms\Gateways\Gateway;
 use Overtrue\EasySms\Support\Config;
-use Overtrue\EasySms\Traits\HasHttpRequest;
 use Psr\Http\Message\ResponseInterface;
 
 class AccessyouGateway extends Gateway
@@ -45,7 +45,7 @@ class AccessyouGateway extends Gateway
             'pwd' => $config->get('password'),
         ];
 
-        /** @var array|ResponseInterface */
+        /** @var array|ResponseInterface|string $response */
         $response = $this->get(self::ENDPOINT_URL, $params);
         $msgId = $response->getBody()->getContents();
 

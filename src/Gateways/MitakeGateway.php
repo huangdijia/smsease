@@ -11,13 +11,13 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Smsease\Gateways;
 
-use Overtrue\EasySms\Support\Config;
-use Overtrue\EasySms\Gateways\Gateway;
-use Psr\Http\Message\ResponseInterface;
-use Overtrue\EasySms\Traits\HasHttpRequest;
+use Huangdijia\Smsease\Traits\HasHttpRequest;
 use Overtrue\EasySms\Contracts\MessageInterface;
 use Overtrue\EasySms\Contracts\PhoneNumberInterface;
 use Overtrue\EasySms\Exceptions\GatewayErrorException;
+use Overtrue\EasySms\Gateways\Gateway;
+use Overtrue\EasySms\Support\Config;
+use Psr\Http\Message\ResponseInterface;
 
 class MitakeGateway extends Gateway
 {
@@ -51,7 +51,7 @@ class MitakeGateway extends Gateway
             // 'dlvtime'    => $config->get('dlvtime'),
         ];
 
-        /** @var array|ResponseInterface */
+        /** @var array|ResponseInterface|string $response */
         $response = $this->get(self::ENDPOINT_URL, $params);
         $result = $this->parseResponse($response->getBody()->getContents());
 

@@ -11,13 +11,13 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Smsease\Gateways;
 
-use Overtrue\EasySms\Support\Config;
-use Overtrue\EasySms\Gateways\Gateway;
-use Psr\Http\Message\ResponseInterface;
-use Overtrue\EasySms\Traits\HasHttpRequest;
+use Huangdijia\Smsease\Traits\HasHttpRequest;
 use Overtrue\EasySms\Contracts\MessageInterface;
 use Overtrue\EasySms\Contracts\PhoneNumberInterface;
 use Overtrue\EasySms\Exceptions\GatewayErrorException;
+use Overtrue\EasySms\Gateways\Gateway;
+use Overtrue\EasySms\Support\Config;
+use Psr\Http\Message\ResponseInterface;
 
 class TwsmsGateway extends Gateway
 {
@@ -49,7 +49,7 @@ class TwsmsGateway extends Gateway
             'message' => iconv('utf-8', $config->get('encoding') ?? 'big5' . '//IGNORE', $msg),
         ];
 
-        /** @var array|ResponseInterface */
+        /** @var array|ResponseInterface|string $response */
         $response = $this->post(self::ENDPOINT_URL, $params);
 
         [$key, $msgId] = explode('=', $response->getBody()->getContents());

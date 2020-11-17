@@ -11,14 +11,14 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Smsease\Gateways;
 
-use Throwable;
-use Overtrue\EasySms\Support\Config;
-use Overtrue\EasySms\Gateways\Gateway;
-use Psr\Http\Message\ResponseInterface;
-use Overtrue\EasySms\Traits\HasHttpRequest;
+use Huangdijia\Smsease\Traits\HasHttpRequest;
 use Overtrue\EasySms\Contracts\MessageInterface;
 use Overtrue\EasySms\Contracts\PhoneNumberInterface;
 use Overtrue\EasySms\Exceptions\GatewayErrorException;
+use Overtrue\EasySms\Gateways\Gateway;
+use Overtrue\EasySms\Support\Config;
+use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 
 class MxtongGateway extends Gateway
 {
@@ -28,6 +28,19 @@ class MxtongGateway extends Gateway
 
     const SUCCESS_CODE = 'Sucess';
 
+    /**
+     * <?xml version="1.0" encoding="utf-8"?>
+     * <ROOT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="JobSendedDescription">
+     *   <RetCode>Sucess</RetCode>
+     *   <JobID>71787727</JobID>
+     *   <OKPhoneCounts>1</OKPhoneCounts>
+     *   <StockReduced>1</StockReduced>
+     *   <ErrPhones />
+     * </ROOT>.
+     * @throws RuntimeException
+     * @throws GatewayErrorException
+     * @return array
+     */
     public function send(PhoneNumberInterface $to, MessageInterface $message, Config $config)
     {
         $data = $message->getData($this);
@@ -52,29 +65,21 @@ class MxtongGateway extends Gateway
             'PostFixNumber' => $config->get('post_fix_number') ?? 1,
         ];
 
-        /** @var array|ResponseInterface */
-        $response = $this->post(self::ENDPOINT_URL, $params, [
+        /** @var array|ResponseInterface|string $response */
+        $result = $this->post(self::ENDPOINT_URL, $params, [
             'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
 
-        try {
-            $xmlStr = preg_replace('/<ROOT[^>]+>/', '<ROOT>', $response->getBody()->getContents());
-            $xmlObj = simplexml_load_string($xmlStr);
-            $result = json_decode(json_encode($xmlObj), true);
-        } catch (Throwable $e) {
-            throw new GatewayErrorException('Parse xml failed, error:' . $e->getMessage(), 402, $response);
-        }
-
-        if ($result === false) {
-            throw new GatewayErrorException('Parse xml failed', 402, $response);
+        if (! $result) {
+            throw new GatewayErrorException('Parse xml failed', 402, ['result' => $result]);
         }
 
         if (! isset($result['RetCode']) || $result['RetCode'] != self::SUCCESS_CODE) {
-            throw new GatewayErrorException($result['Message'], 402, $response);
+            throw new GatewayErrorException($result['Message'], 402, ['result' => $result]);
         }
 
         if (isset($result['OKPhoneCounts']) && $result['OKPhoneCounts'] == 0) {
-            throw new GatewayErrorException($result['Message'], 403, $response);
+            throw new GatewayErrorException($result['Message'], 403, ['result' => $result]);
         }
 
         return $result;
