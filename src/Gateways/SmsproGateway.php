@@ -66,12 +66,6 @@ class SmsproGateway extends Gateway
             'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
 
-        $content = trim($response->body());
-
-        if ($content == '') {
-            throw new GatewayErrorException('Response body is empty!', 402, ['response' => $response]);
-        }
-
         $state = $response->json('State') ?? 0;
 
         if ($state != self::SUCCESS_CODE) {

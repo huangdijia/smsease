@@ -16,21 +16,33 @@ use RuntimeException;
 
 class Response
 {
+    /**
+     * @var ResponseInterface
+     */
     protected $response;
 
+    /**
+     * @var array
+     */
     protected $decoded;
+
+    /**
+     * @var int
+     */
+    protected $status;
 
     public function __construct(ResponseInterface $response)
     {
         $this->response = $response;
+        $this->status = $response->getStatusCode();
     }
 
     public function __call($name, $arguments)
     {
-        return $this->{$name}(...$arguments);
+        return $this->response->{$name}(...$arguments);
     }
 
-    public function getResponse(): ResponseInterface
+    public function toPsrResponse(): ResponseInterface
     {
         return $this->response;
     }
@@ -40,7 +52,7 @@ class Response
      */
     public function status()
     {
-        return $this->response->getStatusCode();
+        return $this->status;
     }
 
     /**
@@ -49,7 +61,7 @@ class Response
      */
     public function body()
     {
-        return $this->response->getBody()->getContents();
+        return (string) $this->response->getBody();
     }
 
     /**
@@ -57,8 +69,8 @@ class Response
      */
     public function object(): object
     {
-        $contentType = $this->response->getHeaderLine('Content-Type');
-        $contents = $this->response->getBody()->getContents();
+        $contentType = $this->header('Content-Type');
+        $contents = $this->body();
 
         if (stripos($contentType, 'json') !== false || stripos($contentType, 'javascript')) {
             return json_decode($contents);
@@ -74,10 +86,10 @@ class Response
     /**
      * @throws RuntimeException
      */
-    public function array(): array
+    public function toArray(): array
     {
-        $contentType = $this->response->getHeaderLine('Content-Type');
-        $contents = $this->response->getBody()->getContents();
+        $contentType = $this->header('Content-Type');
+        $contents = $this->body();
 
         if (stripos($contentType, 'json') !== false || stripos($contentType, 'javascript')) {
             return json_decode($contents, true);
@@ -99,9 +111,17 @@ class Response
     public function json($key = null, $default = null)
     {
         if (is_null($this->decoded)) {
-            $this->decoded = $this->array();
+            $this->decoded = $this->toArray();
         }
 
         return array_get($this->decoded, $key, $default);
+    }
+
+    /**
+     * @return string
+     */
+    public function header(string $header)
+    {
+        return $this->response->getHeaderLine($header);
     }
 }

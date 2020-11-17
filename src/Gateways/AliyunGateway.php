@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Smsease.
+ *
+ * @link     https://github.com/huangdijia/smsease
+ * @document https://github.com/huangdijia/smsease/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ * @license  https://github.com/huangdijia/smsease/blob/main/LICENSE
+ */
 namespace Huangdijia\Smsease\Gateways;
 
 use AlibabaCloud\Client\AlibabaCloud;
@@ -34,11 +43,11 @@ class AliyunGateway extends Gateway
             ->regionId('ap-southeast-1')
             ->asGlobalClient();
 
-        $data     = $message->getData($this);
-        $signName = !empty($data['sign_name']) ? $data['sign_name'] : $config->get('sign_name');
-        $msg      = $message->getContent($this);
+        $data = $message->getData($this);
+        $signName = ! empty($data['sign_name']) ? $data['sign_name'] : $config->get('sign_name');
+        $msg = $message->getContent($this);
 
-        if (!empty($msg) && mb_substr($msg, 0, 1) != '【' && !empty($signName)) {
+        if (! empty($msg) && mb_substr($msg, 0, 1) != '【' && ! empty($signName)) {
             $msg = '【' . $signName . '】' . $msg;
         }
 
@@ -51,8 +60,8 @@ class AliyunGateway extends Gateway
         }
 
         $query = [
-            "To"      => !\is_null($to->getIDDCode()) ? strval(str_replace('+', '', $to->getUniversalNumber())) : $to->getNumber(),
-            "Message" => $msg,
+            'To' => ! \is_null($to->getIDDCode()) ? strval(str_replace('+', '', $to->getUniversalNumber())) : $to->getNumber(),
+            'Message' => $msg,
         ];
 
         try {
@@ -77,7 +86,7 @@ class AliyunGateway extends Gateway
     }
 
     /**
-     * Get the info of account
+     * Get the info of account.
      * @return array
      */
     public function info()
