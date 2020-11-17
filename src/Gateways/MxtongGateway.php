@@ -68,7 +68,7 @@ class MxtongGateway extends Gateway
             'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
 
-        $result = $response->array();
+        $result = $response->json();
 
         if (! $result) {
             throw new GatewayErrorException('Parse xml failed', 402, ['response' => $response]);

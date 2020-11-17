@@ -108,6 +108,13 @@ trait HasHttpRequest
      */
     protected function getHttpClient(array $options = [])
     {
+        // use hyperf/guzzle
+        if (class_exists('Hyperf\Guzzle\ClientFactory')) {
+            $container = \Hyperf\Utils\ApplicationContext::getContainer();
+
+            return (new \Hyperf\Guzzle\ClientFactory($container))->create($options);
+        }
+
         return new Client($options);
     }
 }
