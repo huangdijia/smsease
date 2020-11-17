@@ -17,7 +17,6 @@ use Overtrue\EasySms\Contracts\PhoneNumberInterface;
 use Overtrue\EasySms\Exceptions\GatewayErrorException;
 use Overtrue\EasySms\Gateways\Gateway;
 use Overtrue\EasySms\Support\Config;
-use Psr\Http\Message\ResponseInterface;
 
 class AccessyouGateway extends Gateway
 {
@@ -45,12 +44,12 @@ class AccessyouGateway extends Gateway
             'pwd' => $config->get('password'),
         ];
 
-        /** @var array|ResponseInterface|string $response */
         $response = $this->get(self::ENDPOINT_URL, $params);
-        $msgId = $response->getBody()->getContents();
+        $msgId = trim($response->body());
+        var_dump($msgId);
 
         if (! is_numeric($msgId)) {
-            throw new GatewayErrorException($msgId, 1, $response);
+            throw new GatewayErrorException($msgId, 1, ['response' => $response]);
         }
 
         return [

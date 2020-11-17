@@ -17,7 +17,6 @@ use Overtrue\EasySms\Contracts\PhoneNumberInterface;
 use Overtrue\EasySms\Exceptions\GatewayErrorException;
 use Overtrue\EasySms\Gateways\Gateway;
 use Overtrue\EasySms\Support\Config;
-use Psr\Http\Message\ResponseInterface;
 
 class TwsmsGateway extends Gateway
 {
@@ -49,13 +48,12 @@ class TwsmsGateway extends Gateway
             'message' => iconv('utf-8', $config->get('encoding') ?? 'big5' . '//IGNORE', $msg),
         ];
 
-        /** @var array|ResponseInterface|string $response */
         $response = $this->post(self::ENDPOINT_URL, $params);
 
-        [$key, $msgId] = explode('=', $response->getBody()->getContents());
+        [$key, $msgId] = explode('=', $response->body());
 
         if ($msgId <= 0) {
-            throw new GatewayErrorException('Send failed', 0, $response);
+            throw new GatewayErrorException('Send failed', 0, ['response' => $response]);
         }
 
         return [

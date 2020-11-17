@@ -17,8 +17,6 @@ use Overtrue\EasySms\Contracts\PhoneNumberInterface;
 use Overtrue\EasySms\Exceptions\GatewayErrorException;
 use Overtrue\EasySms\Gateways\Gateway;
 use Overtrue\EasySms\Support\Config;
-use Psr\Http\Message\ResponseInterface;
-use Throwable;
 
 class SmsproGateway extends Gateway
 {
@@ -64,30 +62,22 @@ class SmsproGateway extends Gateway
             'Sender' => $config->get('sender'),
         ];
 
-        /** @var array|ResponseInterface|string $response */
         $response = $this->post(self::ENDPOINT_URL, $params, [
             'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
 
-        $content = trim($response->getBody()->getContents());
+        $content = trim($response->body());
 
         if ($content == '') {
-            throw new GatewayErrorException('Response body is empty!', 402, $response);
-        }
-        try {
-            $result = simplexml_load_string($content);
-            $result = json_encode($result);
-            $result = json_decode($result, true);
-        } catch (Throwable $e) {
-            throw new GatewayErrorException($e->getMessage(), 403, $response);
+            throw new GatewayErrorException('Response body is empty!', 402, ['response' => $response]);
         }
 
-        $state = $result['State'] ?? 0;
+        $state = $response->json('State') ?? 0;
 
         if ($state != self::SUCCESS_CODE) {
-            throw new GatewayErrorException(self::$stateMap[$state] ?? 'Unknown error', 500, $response);
+            throw new GatewayErrorException(self::$stateMap[$state] ?? 'Unknown error', 500, ['response' => $response]);
         }
 
-        return $result;
+        return $response->json();
     }
 }

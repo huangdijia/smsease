@@ -126,3 +126,114 @@ if (! function_exists('retry')) {
         }
     }
 }
+
+if (! function_exists('value')) {
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
+    function value($value)
+    {
+        return $value instanceof Closure ? $value() : $value;
+    }
+}
+
+if (! function_exists('array_get')) {
+    /**
+     * Get an item from an array using "dot" notation.
+     *
+     * @param array|\ArrayAccess $array
+     * @param null|int|string $key
+     * @param mixed $default
+     */
+    function array_get($array, $key = null, $default = null)
+    {
+        if (is_null($key)) {
+            return $array;
+        }
+
+        if (isset($array[$key])) {
+            return $array[$key];
+        }
+
+        if (! is_string($key) || strpos($key, '.') === false) {
+            return $array[$key] ?? value($default);
+        }
+
+        foreach (explode('.', $key) as $segment) {
+            if (array_accessible($array) && array_exists($array, $segment)) {
+                $array = $array[$segment];
+            } else {
+                return value($default);
+            }
+        }
+
+        return $array;
+    }
+}
+
+if (! function_exists('array_has')) {
+    /**
+     * Check if an item or items exist in an array using "dot" notation.
+     *
+     * @param array|\ArrayAccess $array
+     * @param null|array|string $keys
+     */
+    function array_has($array, $keys)
+    {
+        if (is_null($keys)) {
+            return false;
+        }
+
+        $keys = (array) $keys;
+
+        if (! $array || $keys === []) {
+            return false;
+        }
+
+        foreach ($keys as $key) {
+            $subKeyArray = $array;
+
+            if (array_exists($array, $key)) {
+                continue;
+            }
+
+            foreach (explode('.', $key) as $segment) {
+                if (array_accessible($subKeyArray) && array_exists($subKeyArray, $segment)) {
+                    $subKeyArray = $subKeyArray[$segment];
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+}
+
+if (! function_exists('array_exists')) {
+    /**
+     * @param mixed $array
+     * @param int|string $key
+     * @return bool
+     */
+    function array_exists($array, $key)
+    {
+        if ($array instanceof ArrayAccess) {
+            return $array->offsetExists($key);
+        }
+
+        return array_key_exists($key, $array);
+    }
+}
+
+if (! function_exists('array_accessible')) {
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    function array_accessible($value)
+    {
+        return is_array($value) || $value instanceof ArrayAccess;
+    }
+}

@@ -17,7 +17,6 @@ use Overtrue\EasySms\Contracts\PhoneNumberInterface;
 use Overtrue\EasySms\Exceptions\GatewayErrorException;
 use Overtrue\EasySms\Gateways\Gateway;
 use Overtrue\EasySms\Support\Config;
-use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
 class MxtongGateway extends Gateway
@@ -65,21 +64,22 @@ class MxtongGateway extends Gateway
             'PostFixNumber' => $config->get('post_fix_number') ?? 1,
         ];
 
-        /** @var array|ResponseInterface|string $response */
-        $result = $this->post(self::ENDPOINT_URL, $params, [
+        $response = $this->post(self::ENDPOINT_URL, $params, [
             'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
 
+        $result = $response->array();
+
         if (! $result) {
-            throw new GatewayErrorException('Parse xml failed', 402, ['result' => $result]);
+            throw new GatewayErrorException('Parse xml failed', 402, ['response' => $response]);
         }
 
         if (! isset($result['RetCode']) || $result['RetCode'] != self::SUCCESS_CODE) {
-            throw new GatewayErrorException($result['Message'], 402, ['result' => $result]);
+            throw new GatewayErrorException($result['Message'], 402, ['response' => $response]);
         }
 
         if (isset($result['OKPhoneCounts']) && $result['OKPhoneCounts'] == 0) {
-            throw new GatewayErrorException($result['Message'], 403, ['result' => $result]);
+            throw new GatewayErrorException($result['Message'], 403, ['response' => $response]);
         }
 
         return $result;

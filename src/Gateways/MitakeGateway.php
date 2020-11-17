@@ -17,7 +17,6 @@ use Overtrue\EasySms\Contracts\PhoneNumberInterface;
 use Overtrue\EasySms\Exceptions\GatewayErrorException;
 use Overtrue\EasySms\Gateways\Gateway;
 use Overtrue\EasySms\Support\Config;
-use Psr\Http\Message\ResponseInterface;
 
 class MitakeGateway extends Gateway
 {
@@ -51,12 +50,11 @@ class MitakeGateway extends Gateway
             // 'dlvtime'    => $config->get('dlvtime'),
         ];
 
-        /** @var array|ResponseInterface|string $response */
         $response = $this->get(self::ENDPOINT_URL, $params);
-        $result = $this->parseResponse($response->getBody()->getContents());
+        $result = $this->parseResponse($response->body());
 
         if (! ($result['statuscode'] ?? 0) != self::SUCCESS_CODE) {
-            throw new GatewayErrorException($result['Error'] ?? 'Gateway Error', $result['statuscode'] ?? 0, $response);
+            throw new GatewayErrorException($result['Error'] ?? 'Gateway Error', $result['statuscode'] ?? 0, ['response' => $response]);
         }
         return $result;
     }

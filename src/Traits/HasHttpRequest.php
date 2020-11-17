@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Huangdijia\Smsease\Traits;
 
 use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
+use Huangdijia\Smsease\Support\Response;
 
 /**
  * Trait HasHttpRequest.
@@ -26,7 +26,7 @@ trait HasHttpRequest
      * @param array $query
      * @param array $headers
      *
-     * @return array
+     * @return Response
      */
     protected function get($endpoint, $query = [], $headers = [])
     {
@@ -43,7 +43,7 @@ trait HasHttpRequest
      * @param array $params
      * @param array $headers
      *
-     * @return array
+     * @return Response
      */
     protected function post($endpoint, $params = [], $headers = [])
     {
@@ -56,11 +56,11 @@ trait HasHttpRequest
     /**
      * Make a post request with json params.
      *
-     * @param $endpoint
+     * @param string $endpoint
      * @param array $params
      * @param array $headers
      *
-     * @return array
+     * @return Response
      */
     protected function postJson($endpoint, $params = [], $headers = [])
     {
@@ -77,11 +77,11 @@ trait HasHttpRequest
      * @param string $endpoint
      * @param array $options http://docs.guzzlephp.org/en/latest/request-options.html
      *
-     * @return array
+     * @return Response
      */
     protected function request($method, $endpoint, $options = [])
     {
-        return $this->unwrapResponse($this->getHttpClient($this->getBaseOptions())->{$method}($endpoint, $options));
+        return new Response($this->getHttpClient($this->getBaseOptions())->{$method}($endpoint, $options));
     }
 
     /**
@@ -109,25 +109,5 @@ trait HasHttpRequest
     protected function getHttpClient(array $options = [])
     {
         return new Client($options);
-    }
-
-    /**
-     * Convert response contents to json.
-     *
-     * @return array|ResponseInterface|string
-     */
-    protected function unwrapResponse(ResponseInterface $response)
-    {
-        $contentType = $response->getHeaderLine('Content-Type');
-        $contents = $response->getBody()->getContents();
-
-        if (stripos($contentType, 'json') !== false || stripos($contentType, 'javascript')) {
-            return json_decode($contents, true);
-        }
-        if (stripos($contentType, 'xml') !== false) {
-            return json_decode(json_encode(@simplexml_load_string($contents)), true);
-        }
-
-        return $contents;
     }
 }
