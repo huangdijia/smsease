@@ -44,7 +44,7 @@ class MitakeGateway extends Gateway
             'password' => $config->get('password'),
             'type' => $config->get('type') ?? 'now',
             'encoding' => $config->get('encoding') ?? 'big5',
-            'dstaddr' => $to,
+            'dstaddr' => $to->getNumber(),
             'smbody' => iconv('utf-8', $config->get('encoding') ?? 'big5', $msg),
             // 'vldtime'    => $config->get('vldtime'),
             // 'dlvtime'    => $config->get('dlvtime'),
@@ -53,9 +53,10 @@ class MitakeGateway extends Gateway
         $response = $this->get(self::ENDPOINT_URL, $params);
         $result = $this->parseResponse($response->body());
 
-        if (! ($result['statuscode'] ?? 0) != self::SUCCESS_CODE) {
-            throw new GatewayErrorException($result['Error'] ?? 'Gateway Error', $result['statuscode'] ?? 0, ['response' => $response]);
+        if ($result['statuscode'] != self::SUCCESS_CODE) {
+            throw new GatewayErrorException($result['Error'], $result['statuscode'], ['response' => $response]);
         }
+
         return $result;
     }
 
@@ -76,13 +77,16 @@ class MitakeGateway extends Gateway
         }
 
         preg_match_all('/(\w+)=([^\r\n]+)/i', $content, $matches);
+
         if (empty($matches)) {
             return $default;
         }
 
-        $result = [];
+        $result = ['Error' => ''];
+
         foreach ($matches[1] as $i => $key) {
             $result[$key] = isset($matches[2][$i]) ? $matches[2][$i] : '';
+
             if ($key == 'Error') {
                 $result[$key] = iconv('big5', 'utf-8', $result[$key]);
             }
