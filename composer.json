@@ -9,7 +9,8 @@
     }],
     "require": {
         "guzzlehttp/guzzle": "^6.0|^7.0",
-        "overtrue/easy-sms": "^1.1"
+        "overtrue/easy-sms": "^1.1",
+        "alibabacloud/client": "^1.5"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.14",

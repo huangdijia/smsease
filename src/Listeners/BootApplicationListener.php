@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Huangdijia\Smsease\Listeners;
 
 use Huangdijia\Smsease\Gateways\AccessyouGateway;
+use Huangdijia\Smsease\Gateways\AliyunGateway;
 use Huangdijia\Smsease\Gateways\MitakeGateway;
 use Huangdijia\Smsease\Gateways\MxtongGateway;
 use Huangdijia\Smsease\Gateways\SmsproGateway;
@@ -48,6 +49,9 @@ class BootApplicationListener implements ListenerInterface
             /* @var \Overtrue\EasySms\EasySms $easySms */
             $easySms->extend('accessyou', function ($config) {
                 return new AccessyouGateway($config);
+            });
+            $easySms->extend('aliyun', function ($config) {
+                return new AliyunGateway($config);
             });
             $easySms->extend('mitake', function ($config) {
                 return new MitakeGateway($config);

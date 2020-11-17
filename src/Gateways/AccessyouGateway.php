@@ -46,7 +46,6 @@ class AccessyouGateway extends Gateway
 
         $response = $this->get(self::ENDPOINT_URL, $params);
         $msgId = trim($response->body());
-        var_dump($msgId);
 
         if (! is_numeric($msgId)) {
             throw new GatewayErrorException($msgId, 1, ['response' => $response]);
