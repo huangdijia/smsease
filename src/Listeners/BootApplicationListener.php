@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Huangdijia\Smsease\Listeners;
 
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Di\Annotation\Inject;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Overtrue\EasySms\Contracts\GatewayInterface;
@@ -19,6 +20,18 @@ use Overtrue\EasySms\EasySms;
 
 class BootApplicationListener implements ListenerInterface
 {
+    /**
+     * @Inject
+     * @var \Hyperf\Di\Container
+     */
+    protected $container;
+
+    /**
+     * @Inject
+     * @var ConfigInterface
+     */
+    protected $config;
+
     /**
      * 返回一个该监听器要监听的事件数组，可以同时监听多个事件.
      */
@@ -35,14 +48,9 @@ class BootApplicationListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        /** @var \Hyperf\Di\Container */
-        $container = \Hyperf\Utils\ApplicationContext::getContainer();
-        /** @var ConfigInterface $config */
-        $config = $container->get(ConfigInterface::class);
-
-        $container->set(EasySms::class, tap(new EasySms($config->get('easysms', [])), function ($easySms) use ($config) {
+        $this->container->set(EasySms::class, tap(new EasySms($this->config->get('easysms', [])), function ($easySms) {
             /** @var \Overtrue\EasySms\EasySms $easySms */
-            $gateways = $config->get('easysms.gateways', []);
+            $gateways = $this->config->get('easysms.gateways', []);
 
             foreach ($gateways as $name => $config) {
                 $gatewayClass = $config['__gateway__'] ?? '';
