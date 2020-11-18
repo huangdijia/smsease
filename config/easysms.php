@@ -25,6 +25,10 @@ return [
     ],
     // 可用的网关配置
     'gateways' => [
+        'local'     => [
+            '__gateway__' => \Overtrue\EasySms\Gateways\ErrorlogGateway::class,
+            'file'        => '/tmp/easysms.log',
+        ],
         'aliyun' => [
             '__gateway__'       => \Huangdijia\Smsease\Gateways\AliyunGateway::class,
             'access_key_id'     => env('ALIYUN_ACCESS_KEY', ''),
