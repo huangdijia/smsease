@@ -43,9 +43,9 @@ class AliyunGateway extends Gateway
             ->regionId('ap-southeast-1')
             ->asGlobalClient();
 
-        $data = $message->getData($this);
+        $data     = $message->getData($this);
         $signName = ! empty($data['sign_name']) ? $data['sign_name'] : $config->get('sign_name');
-        $msg = $message->getContent($this);
+        $msg      = $message->getContent($this);
 
         if (! empty($msg) && mb_substr($msg, 0, 1) != '【' && ! empty($signName)) {
             $msg = '【' . $signName . '】' . $msg;
@@ -60,7 +60,7 @@ class AliyunGateway extends Gateway
         }
 
         $query = [
-            'To' => ! \is_null($to->getIDDCode()) ? strval(str_replace('+', '', $to->getUniversalNumber())) : $to->getNumber(),
+            'To'      => ! \is_null($to->getIDDCode()) ? strval(str_replace('+', '', $to->getUniversalNumber())) : $to->getNumber(),
             'Message' => $msg,
         ];
 

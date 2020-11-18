@@ -26,7 +26,7 @@ class AccessyouGateway extends Gateway
 
     public function send(PhoneNumberInterface $to, MessageInterface $message, Config $config)
     {
-        $data = $message->getData($this);
+        $data     = $message->getData($this);
         $signName = ! empty($data['sign_name']) ? $data['sign_name'] : $config->get('sign_name', '');
 
         unset($data['sign_name']);
@@ -38,14 +38,14 @@ class AccessyouGateway extends Gateway
         }
 
         $params = [
-            'msg' => self::msgEncode($msg),
-            'phone' => $to->getUniversalNumber(),
+            'msg'       => self::msgEncode($msg),
+            'phone'     => $to->getUniversalNumber(),
             'accountno' => $config->get('account'),
-            'pwd' => $config->get('password'),
+            'pwd'       => $config->get('password'),
         ];
 
         $response = $this->get(self::ENDPOINT_URL, $params);
-        $msgId = trim($response->body());
+        $msgId    = trim($response->body());
 
         if (! is_numeric($msgId)) {
             throw new GatewayErrorException($msgId, 1, ['response' => $response]);
@@ -128,12 +128,12 @@ class AccessyouGateway extends Gateway
                 $n += ord($c[1]) & 0x3f;
                 return $n;
             case 3:
-                $n = (ord($c[0]) & 0x1f) << 12;
+                $n = (ord($c[0]) & 0x1f)  << 12;
                 $n += (ord($c[1]) & 0x3f) << 6;
                 $n += ord($c[2]) & 0x3f;
                 return $n;
             case 4:
-                $n = (ord($c[0]) & 0x0f) << 18;
+                $n = (ord($c[0]) & 0x0f)  << 18;
                 $n += (ord($c[1]) & 0x3f) << 12;
                 $n += (ord($c[2]) & 0x3f) << 6;
                 $n += ord($c[3]) & 0x3f;
@@ -150,8 +150,8 @@ class AccessyouGateway extends Gateway
      */
     private static function utf8Unicode($str)
     {
-        $unicode = [];
-        $values = [];
+        $unicode    = [];
+        $values     = [];
         $lookingFor = 1;
 
         for ($i = 0; $i < strlen($str); ++$i) {
@@ -169,8 +169,8 @@ class AccessyouGateway extends Gateway
                 if (count($values) == $lookingFor) {
                     $number = ($lookingFor == 3) ? (($values[0] % 16) * 4096) + (($values[1] % 64) * 64) + ($values[2] % 64) : (($values[0] % 32) * 64) + ($values[1] % 64);
 
-                    $unicode[] = $number;
-                    $values = [];
+                    $unicode[]  = $number;
+                    $values     = [];
                     $lookingFor = 1;
                 }
             }

@@ -37,10 +37,10 @@ class ConfigProvider
             // 组件默认配置文件，即执行命令后会把 source 的对应的文件复制为 destination 对应的的文件
             'publish' => [
                 [
-                    'id' => 'config',
+                    'id'          => 'config',
                     'description' => 'description of this config file.', // 描述
                     // 建议默认配置放在 publish 文件夹中，文件命名和组件名称相同
-                    'source' => __DIR__ . '/../config/easysms.php', // 对应的配置文件路径
+                    'source'      => __DIR__ . '/../config/easysms.php', // 对应的配置文件路径
                     'destination' => BASE_PATH . '/config/autoload/easysms.php', // 复制为这个路径下的该文件
                 ],
             ],

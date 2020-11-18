@@ -28,7 +28,7 @@ class MitakeGateway extends Gateway
 
     public function send(PhoneNumberInterface $to, MessageInterface $message, Config $config)
     {
-        $data = $message->getData($this);
+        $data     = $message->getData($this);
         $signName = ! empty($data['sign_name']) ? $data['sign_name'] : $config->get('sign_name', '');
 
         unset($data['sign_name']);
@@ -42,16 +42,16 @@ class MitakeGateway extends Gateway
         $params = [
             'username' => $config->get('username'),
             'password' => $config->get('password'),
-            'type' => $config->get('type') ?? 'now',
+            'type'     => $config->get('type') ?? 'now',
             'encoding' => $config->get('encoding') ?? 'big5',
-            'dstaddr' => $to->getNumber(),
-            'smbody' => iconv('utf-8', $config->get('encoding') ?? 'big5', $msg),
+            'dstaddr'  => $to->getNumber(),
+            'smbody'   => iconv('utf-8', $config->get('encoding') ?? 'big5', $msg),
             // 'vldtime'    => $config->get('vldtime'),
             // 'dlvtime'    => $config->get('dlvtime'),
         ];
 
         $response = $this->get(self::ENDPOINT_URL, $params);
-        $result = $this->parseResponse($response->body());
+        $result   = $this->parseResponse($response->body());
 
         if ($result['statuscode'] != self::SUCCESS_CODE) {
             throw new GatewayErrorException($result['Error'], $result['statuscode'], ['response' => $response]);
@@ -69,7 +69,7 @@ class MitakeGateway extends Gateway
     {
         $default = [
             'statuscode' => 0,
-            'Error' => 'Parse response failed',
+            'Error'      => 'Parse response failed',
         ];
 
         if (empty($content)) {

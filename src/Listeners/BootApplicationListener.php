@@ -11,15 +11,10 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Smsease\Listeners;
 
-use Huangdijia\Smsease\Gateways\AccessyouGateway;
-use Huangdijia\Smsease\Gateways\AliyunGateway;
-use Huangdijia\Smsease\Gateways\MitakeGateway;
-use Huangdijia\Smsease\Gateways\MxtongGateway;
-use Huangdijia\Smsease\Gateways\SmsproGateway;
-use Huangdijia\Smsease\Gateways\TwsmsGateway;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
+use Overtrue\EasySms\Contracts\GatewayInterface;
 use Overtrue\EasySms\EasySms;
 
 class BootApplicationListener implements ListenerInterface
@@ -45,26 +40,21 @@ class BootApplicationListener implements ListenerInterface
         /** @var ConfigInterface $config */
         $config = $container->get(ConfigInterface::class);
 
-        $container->set(EasySms::class, tap(new EasySms($config->get('easysms') ?? []), function ($easySms) {
-            /* @var \Overtrue\EasySms\EasySms $easySms */
-            $easySms->extend('accessyou', function ($config) {
-                return new AccessyouGateway($config);
-            });
-            $easySms->extend('aliyun', function ($config) {
-                return new AliyunGateway($config);
-            });
-            $easySms->extend('mitake', function ($config) {
-                return new MitakeGateway($config);
-            });
-            $easySms->extend('mxtong', function ($config) {
-                return new MxtongGateway($config);
-            });
-            $easySms->extend('smspro', function ($config) {
-                return new SmsproGateway($config);
-            });
-            $easySms->extend('twsms', function ($config) {
-                return new TwsmsGateway($config);
-            });
+        $container->set(EasySms::class, tap(new EasySms($config->get('easysms', [])), function ($easySms) use ($config) {
+            /** @var \Overtrue\EasySms\EasySms $easySms */
+            $gateways = $config->get('easysms.gateways', []);
+
+            foreach ($gateways as $name => $config) {
+                $gatewayClass = $config['__gateway__'] ?? '';
+
+                if (! class_exists($gatewayClass) || ! in_array(GatewayInterface::class, class_implements($gatewayClass))) {
+                    continue;
+                }
+
+                $easySms->extend($name, function ($config) use ($gatewayClass) {
+                    return new $gatewayClass($config);
+                });
+            }
         }));
     }
 }

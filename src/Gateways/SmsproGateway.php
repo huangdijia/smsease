@@ -27,21 +27,21 @@ class SmsproGateway extends Gateway
     const SUCCESS_CODE = 1;
 
     protected static $stateMap = [
-        1 => 'Message	Sent',
-        0 => 'Missing	Values',
-        10 => 'Incorrect Username or Password',
-        20 => 'Message content too long',
-        30 => 'Message content too long',
-        40 => 'Telephone number too long',
-        60 => 'Incorrect Country Code',
-        70 => 'Balance not enough',
-        80 => 'Incorrect date time',
+        1   => 'Message	Sent',
+        0   => 'Missing	Values',
+        10  => 'Incorrect Username or Password',
+        20  => 'Message content too long',
+        30  => 'Message content too long',
+        40  => 'Telephone number too long',
+        60  => 'Incorrect Country Code',
+        70  => 'Balance not enough',
+        80  => 'Incorrect date time',
         100 => 'System error, please try again',
     ];
 
     public function send(PhoneNumberInterface $to, MessageInterface $message, Config $config)
     {
-        $data = $message->getData($this);
+        $data     = $message->getData($this);
         $signName = ! empty($data['sign_name']) ? $data['sign_name'] : $config->get('sign_name', '');
 
         unset($data['sign_name']);
@@ -53,13 +53,13 @@ class SmsproGateway extends Gateway
         }
 
         $params = [
-            'Username' => $config->get('username'),
-            'Password' => $config->get('password'),
-            'Telephone' => $to->getNumber(),
+            'Username'     => $config->get('username'),
+            'Password'     => $config->get('password'),
+            'Telephone'    => $to->getNumber(),
             'UserDefineNo' => '00000',
-            'Hex' => '',
-            'Message' => $msg,
-            'Sender' => $config->get('sender'),
+            'Hex'          => '',
+            'Message'      => $msg,
+            'Sender'       => $config->get('sender'),
         ];
 
         $response = $this->post(self::ENDPOINT_URL, $params, [

@@ -42,7 +42,7 @@ class MxtongGateway extends Gateway
      */
     public function send(PhoneNumberInterface $to, MessageInterface $message, Config $config)
     {
-        $data = $message->getData($this);
+        $data     = $message->getData($this);
         $signName = ! empty($data['sign_name']) ? $data['sign_name'] : $config->get('sign_name', '');
 
         unset($data['sign_name']);
@@ -54,13 +54,13 @@ class MxtongGateway extends Gateway
         }
 
         $params = [
-            'Phones' => $to->getNumber(),
-            'Content' => $msg,
-            'SendTime' => '',
-            'UserId' => $config->get('user_id'),
-            'Account' => $config->get('account'),
-            'Password' => $config->get('password'),
-            'SendType' => $config->get('send_type') ?? 1,
+            'Phones'        => $to->getNumber(),
+            'Content'       => $msg,
+            'SendTime'      => '',
+            'UserId'        => $config->get('user_id'),
+            'Account'       => $config->get('account'),
+            'Password'      => $config->get('password'),
+            'SendType'      => $config->get('send_type') ?? 1,
             'PostFixNumber' => $config->get('post_fix_number') ?? 1,
         ];
 

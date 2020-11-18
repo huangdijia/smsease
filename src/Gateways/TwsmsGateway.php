@@ -62,7 +62,7 @@ class TwsmsGateway extends Gateway
 
     public function send(PhoneNumberInterface $to, MessageInterface $message, Config $config)
     {
-        $data = $message->getData($this);
+        $data     = $message->getData($this);
         $signName = ! empty($data['sign_name']) ? $data['sign_name'] : $config->get('sign_name', '');
 
         unset($data['sign_name']);
@@ -87,15 +87,15 @@ class TwsmsGateway extends Gateway
         $params = [
             'username' => $config->get('account'),
             'password' => $config->get('password'),
-            'mobile' => $to->getNumber(),
-            'longsms' => $config->get('longsms') ?? 'N',
-            'message' => urlencode($msg),
+            'mobile'   => $to->getNumber(),
+            'longsms'  => $config->get('longsms') ?? 'N',
+            'message'  => urlencode($msg),
         ];
 
         $response = $this->post(self::ENDPOINT_URL, $params);
 
         $result = json_decode($response->body(), true) ?: [];
-        $code = $result['code'] ?? -1;
+        $code   = $result['code'] ?? -1;
 
         if ($code != self::SUCCESS_CODE) {
             throw new GatewayErrorException(self::$errCodes[$code] ?? 'Unknown error', (int) $code, ['response' => $response]);

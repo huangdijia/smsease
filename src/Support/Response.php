@@ -22,7 +22,7 @@ class Response
     protected $response;
 
     /**
-     * @var array|null
+     * @var null|array
      */
     protected $decoded;
 
@@ -34,7 +34,7 @@ class Response
     public function __construct(ResponseInterface $response)
     {
         $this->response = $response;
-        $this->status = $response->getStatusCode();
+        $this->status   = $response->getStatusCode();
     }
 
     public function __call($name, $arguments)
@@ -70,7 +70,7 @@ class Response
     public function object(): object
     {
         $contentType = $this->header('Content-Type');
-        $contents = $this->body();
+        $contents    = $this->body();
 
         if (stripos($contentType, 'json') !== false || stripos($contentType, 'javascript')) {
             return json_decode($contents);
@@ -89,7 +89,7 @@ class Response
     public function toArray(): array
     {
         $contentType = $this->header('Content-Type');
-        $contents = $this->body();
+        $contents    = $this->body();
 
         if (stripos($contentType, 'json') !== false || stripos($contentType, 'javascript')) {
             return json_decode($contents, true);
