@@ -96,6 +96,19 @@ $container = \Hyperf\Utils\ApplicationContext::getcontainer();
 $smsease = $container->get(\Huangdijia\Smsease\Smsease::class);
 ~~~
 
+or 
+
+~~~php
+class Foo
+{
+    @Inject
+    @var \Huangdijia\Smsease\Smsease::class
+    private $smsease;
+
+    // ...
+}
+~~~
+
 ### Laravel
 
 * Publish
