@@ -11,12 +11,12 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Smsease\Listeners;
 
+use Huangdijia\Smsease\Contracts\GatewayInterface;
+use Huangdijia\Smsease\Smsease;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
-use Overtrue\EasySms\Contracts\GatewayInterface;
-use Overtrue\EasySms\EasySms;
 
 class BootApplicationListener implements ListenerInterface
 {
@@ -48,9 +48,9 @@ class BootApplicationListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        $this->container->set(EasySms::class, tap(new EasySms($this->config->get('easysms', [])), function ($easySms) {
-            /** @var \Overtrue\EasySms\EasySms $easySms */
-            $gateways = $this->config->get('easysms.gateways', []);
+        $this->container->set(Smsease::class, tap(new Smsease($this->config->get('smsease', [])), function ($smsease) {
+            /** @var Smsease $smsease */
+            $gateways = $this->config->get('smsease.gateways', []);
 
             foreach ($gateways as $name => $config) {
                 $gatewayClass = $config['__gateway__'] ?? '';
@@ -59,7 +59,7 @@ class BootApplicationListener implements ListenerInterface
                     continue;
                 }
 
-                $easySms->extend($name, function ($config) use ($gatewayClass) {
+                $smsease->extend($name, function ($config) use ($gatewayClass) {
                     return new $gatewayClass($config);
                 });
             }

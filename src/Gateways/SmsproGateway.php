@@ -15,7 +15,6 @@ use Huangdijia\Smsease\Traits\HasHttpRequest;
 use Overtrue\EasySms\Contracts\MessageInterface;
 use Overtrue\EasySms\Contracts\PhoneNumberInterface;
 use Overtrue\EasySms\Exceptions\GatewayErrorException;
-use Overtrue\EasySms\Gateways\Gateway;
 use Overtrue\EasySms\Support\Config;
 
 class SmsproGateway extends Gateway
@@ -23,6 +22,8 @@ class SmsproGateway extends Gateway
     use HasHttpRequest;
 
     const ENDPOINT_URL = 'https://api3.hksmspro.com/service/smsapi.asmx/SendSMS';
+
+    const ENDPOINT_QUERY_URL = 'https://api3.hksmspro.com/service/smsapi.asmx/GetBalance';
 
     const SUCCESS_CODE = 1;
 
@@ -73,5 +74,23 @@ class SmsproGateway extends Gateway
         }
 
         return $response->json();
+    }
+
+    public function getBalance(Config $config)
+    {
+        $params = [
+            'Username'     => $config->get('username'),
+            'Password'     => $config->get('password'),
+            'ResponseID'   => '',
+            'UserDefineNo' => '',
+        ];
+
+        $response = $this->post(self::ENDPOINT_QUERY_URL, $params);
+
+        return [
+            'account' => $config->get('username'),
+            'balance' => $response->json('CurrentBalance', 0),
+            'credit'  => $response->json('CreditLine', 0),
+        ];
     }
 }

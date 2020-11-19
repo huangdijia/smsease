@@ -11,9 +11,8 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Smsease;
 
+use Huangdijia\Smsease\Contracts\GatewayInterface;
 use Illuminate\Support\ServiceProvider;
-use Overtrue\EasySms\Contracts\GatewayInterface;
-use Overtrue\EasySms\EasySms;
 
 class SmseaseServiceProvider extends ServiceProvider
 {
@@ -25,10 +24,10 @@ class SmseaseServiceProvider extends ServiceProvider
     {
         $this->configure();
 
-        $this->app->singleton(EasySms::class, function ($app) {
-            return tap(new EasySms($app['config']->get('easysms')), function ($easySms) use ($app) {
-                /** @var \Overtrue\EasySms\EasySms $easySms */
-                $gateways = $app['config']->get('easysms.gateways', []);
+        $this->app->singleton(Smsease::class, function ($app) {
+            return tap(new Smsease($app['config']->get('smsease')), function ($smsease) use ($app) {
+                /** @var Smsease $smsease */
+                $gateways = $app['config']->get('smsease.gateways', []);
 
                 foreach ($gateways as $name => $config) {
                     $gatewayClass = $config['__gateway__'] ?? '';
@@ -37,7 +36,7 @@ class SmseaseServiceProvider extends ServiceProvider
                         continue;
                     }
 
-                    $easySms->extend($name, function ($config) use ($gatewayClass) {
+                    $smsease->extend($name, function ($config) use ($gatewayClass) {
                         return new $gatewayClass($config);
                     });
                 }

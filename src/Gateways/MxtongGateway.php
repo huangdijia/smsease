@@ -15,7 +15,6 @@ use Huangdijia\Smsease\Traits\HasHttpRequest;
 use Overtrue\EasySms\Contracts\MessageInterface;
 use Overtrue\EasySms\Contracts\PhoneNumberInterface;
 use Overtrue\EasySms\Exceptions\GatewayErrorException;
-use Overtrue\EasySms\Gateways\Gateway;
 use Overtrue\EasySms\Support\Config;
 use RuntimeException;
 

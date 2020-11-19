@@ -15,14 +15,16 @@ use Huangdijia\Smsease\Traits\HasHttpRequest;
 use Overtrue\EasySms\Contracts\MessageInterface;
 use Overtrue\EasySms\Contracts\PhoneNumberInterface;
 use Overtrue\EasySms\Exceptions\GatewayErrorException;
-use Overtrue\EasySms\Gateways\Gateway;
 use Overtrue\EasySms\Support\Config;
+use RuntimeException;
 
 class AccessyouGateway extends Gateway
 {
     use HasHttpRequest;
 
-    const ENDPOINT_URL = 'http://api.accessyou.com/sms/sendsms.php';
+    const ENDPOINT_URL       = 'http://api.accessyou.com/sms/sendsms.php';
+
+    const ENDPOINT_QUERY_URL = 'https://q.accessyou-api.com/sms/check_accinfo.php';
 
     public function send(PhoneNumberInterface $to, MessageInterface $message, Config $config)
     {
@@ -54,6 +56,23 @@ class AccessyouGateway extends Gateway
         return [
             'msg_id' => $msgId,
         ];
+    }
+
+    public function getBalance(Config $config)
+    {
+        $params = [
+            'accountno' => $config->get('account'),
+            'user'      => $config->get('check_user'),
+            'pwd'       => $config->get('check_password'),
+        ];
+
+        $response = $this->get(self::ENDPOINT_QUERY_URL, $params);
+
+        if ($response->json('auth.auth_status', -1) != 100) {
+            throw new RuntimeException($response->json('auth.auth_status_desc', ''), $response->json('auth.auth_status', 1));
+        }
+
+        return $response->json();
     }
 
     /**
@@ -94,13 +113,13 @@ class AccessyouGateway extends Gateway
                     $str .= '&#' . self::chineseUnicode(iconv('big5-hkscs', 'UTF-8', $v)) . ';';
                 }
                 return $str;
-                // break;
+            // break;
             case 1: // 简体中文
                 foreach ($ar[0] as $v) {
                     $str .= '&#' . self::chineseUnicode(iconv('gb2312', 'UTF-8', $v)) . ';';
                 }
                 return $str;
-                // break;
+            // break;
             case 2: // 二进制编码
                 $cell = self::utf8Unicode($cell);
                 foreach ($cell as $v) {
