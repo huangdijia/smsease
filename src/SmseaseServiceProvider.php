@@ -43,22 +43,22 @@ class SmseaseServiceProvider extends ServiceProvider
             });
         });
 
-        $this->app->alias(EasySms::class, 'easysms');
+        $this->app->alias(Smsease::class, 'smsease');
     }
 
     public function configure()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/easysms.php', 'easysms');
+        $this->mergeConfigFrom(__DIR__ . '/../config/smsease.php', 'smsease');
 
         if ($this->app->runningInConsole()) {
-            $this->publishes([__DIR__ . '/../config/easysms.php' => $this->app->basePath('config/easysms.php')]);
+            $this->publishes([__DIR__ . '/../config/smsease.php' => $this->app->basePath('config/smsease.php')]);
         }
     }
 
     public function provides()
     {
         return [
-            'easysms',
+            'smsease',
         ];
     }
 }

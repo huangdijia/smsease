@@ -93,7 +93,7 @@ php bin/hyperf.php vendor:publish "huangdijia/smsease"
 
 ~~~php
 $container = \Hyperf\Utils\ApplicationContext::getcontainer();
-$easysms = $container->get(\Overtrue\EasySms\EasySms::class);
+$smsease = $container->get(\Huangdijia\Smsease\Smsease::class);
 ~~~
 
 ### Laravel
@@ -107,7 +107,9 @@ php artisan vendor:publish --provider="Huangdijia\Smsease\SmseaseServiceProvider
 * Call
 
 ~~~php
-$easysms = app(\Overtrue\EasySms\EasySms::class);
+$smsease = app(\Huangdijia\Smsease\Smsease::class);
+// or
+$smsease = app('smsease');
 ~~~
 
 ## Link
