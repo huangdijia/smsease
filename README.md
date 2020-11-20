@@ -13,7 +13,7 @@ composer require huangdijia/smsease
 * Call
 
 ~~~php
-use Overtrue\EasySms\EasySms;
+use Huangdijia\Smsease\Smsease;
 
 $config = [
     // HTTP request timeout
@@ -32,6 +32,7 @@ $config = [
     // Available gateways
     'gateways' => [
         'accessyou' => [
+            '__gateway__' => \Huangdijia\Smsease\Gateways\AccessyouGateway::class, // custom
             'account' => 'account',
             'password' => 'password',
         ],
@@ -44,41 +45,15 @@ $config = [
     ],
 ];
 
-$easysms = new EasySms($config);
+$smsease = new Smsease($config);
 
-$easysms->send(13188888888, [
+$smsease->send(13188888888, [
     'content'  => 'Your verify code: 1234',
     'template' => 'SMS_001',
     'data' => [
         'code' => 1234
     ],
 ]);
-~~~
-
-* Extends
-
-~~~php
-use Huangdijia\Smsease\Gateways\AccessyouGateway;
-use Huangdijia\Smsease\Gateways\MitakeGateway;
-use Huangdijia\Smsease\Gateways\MxtongGateway;
-use Huangdijia\Smsease\Gateways\SmsproGateway;
-use Huangdijia\Smsease\Gateways\TwsmsGateway;
-
-$easySms->extend('accessyou', function ($config) {
-    return new AccessyouGateway($config);
-});
-$easySms->extend('mitake', function ($config) {
-    return new MitakeGateway($config);
-});
-$easySms->extend('mxtong', function ($config) {
-    return new MxtongGateway($config);
-});
-$easySms->extend('smspro', function ($config) {
-    return new SmsproGateway($config);
-});
-$easySms->extend('twsms', function ($config) {
-    return new TwsmsGateway($config);
-});
 ~~~
 
 ### Hyperf
@@ -92,13 +67,15 @@ php bin/hyperf.php vendor:publish "huangdijia/smsease"
 * Call
 
 ~~~php
+// Make by container
 $container = \Hyperf\Utils\ApplicationContext::getcontainer();
 $smsease = $container->get(\Huangdijia\Smsease\Smsease::class);
 ~~~
 
-or 
+or
 
 ~~~php
+// Make by annotation
 class Foo
 {
     @Inject
@@ -107,6 +84,21 @@ class Foo
 
     // ...
 }
+~~~
+
+* Options
+
+If you want using coroutine, add class_map setting into `config/autoload/annotations.php` of your project
+
+~~~php
+return [
+    'scan' => [
+        // ...
+        'class_map' => [
+            \GuzzleHttp\Client::class => BASE_PATH . '/vendor/huangdijia/smsease/class_map/GuzzleHttp/Client.php',
+        ],
+    ],
+];
 ~~~
 
 ### Laravel

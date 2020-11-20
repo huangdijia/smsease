@@ -17,6 +17,10 @@ use RuntimeException;
 
 abstract class Gateway extends \Overtrue\EasySms\Gateways\Gateway implements GatewayInterface
 {
+    /**
+     * @throws RuntimeException
+     * @return array
+     */
     public function getBalance(Config $config)
     {
         throw new RuntimeException(static::class . ' doesnt support get balance');

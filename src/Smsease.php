@@ -21,6 +21,10 @@ use RuntimeException;
  */
 class Smsease extends EasySms
 {
+    /**
+     * @throws RuntimeException
+     * @return array
+     */
     public function getBalance(string $gateway = '')
     {
         $setting = new Config($this->config->get('gateways.' . $gateway, []));

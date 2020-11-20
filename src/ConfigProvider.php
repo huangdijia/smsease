@@ -11,8 +11,6 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Smsease;
 
-use GuzzleHttp\Client;
-
 defined('BASE_PATH') or define('BASE_PATH', '');
 
 class ConfigProvider
@@ -28,9 +26,9 @@ class ConfigProvider
                     'paths' => [
                         __DIR__,
                     ],
-                    'class_map' => [
-                        Client::class => __DIR__ . '/../class_map/GuzzleHttp/Client.php',
-                    ],
+                    // 'class_map' => [
+                    //     \GuzzleHttp\Client::class => __DIR__ . '/../class_map/GuzzleHttp/Client.php',
+                    // ],
                 ],
             ],
             // 默认 Command 的定义，合并到 Hyperf\Contract\ConfigInterface 内，换个方式理解也就是与 config/autoload/commands.php 对应
