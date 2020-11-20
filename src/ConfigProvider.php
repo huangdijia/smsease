@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Smsease;
 
+use GuzzleHttp\Client;
+
 defined('BASE_PATH') or define('BASE_PATH', '');
 
 class ConfigProvider
@@ -25,6 +27,9 @@ class ConfigProvider
                 'scan' => [
                     'paths' => [
                         __DIR__,
+                    ],
+                    'class_map' => [
+                        Client::class => __DIR__ . '/../class_map/GuzzleHttp/Client.php',
                     ],
                 ],
             ],
