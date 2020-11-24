@@ -22,7 +22,7 @@ class AccessyouGateway extends Gateway
 {
     use HasHttpRequest;
 
-    const ENDPOINT_URL       = 'http://api.accessyou.com/sms/sendsms.php';
+    const ENDPOINT_URL       = 'http://basic.accessyou-api.com/sms/sendsms-utf8-senderid.php';
 
     const ENDPOINT_QUERY_URL = 'https://q.accessyou-api.com/sms/check_accinfo.php';
 
