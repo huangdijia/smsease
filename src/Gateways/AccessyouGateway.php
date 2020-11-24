@@ -44,6 +44,8 @@ class AccessyouGateway extends Gateway
             'phone'     => $to->getUniversalNumber(),
             'accountno' => $config->get('account'),
             'pwd'       => $config->get('password'),
+            'from'      => $config->get('from'),
+            'size'      => $config->get('size', 'l'),
         ];
 
         $response = $this->get(self::ENDPOINT_URL, $params);
