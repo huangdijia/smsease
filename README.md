@@ -1,5 +1,9 @@
 # Smsease
 
+[![Latest Stable Version](https://poser.pugx.org/huangdijia/smsease/version.png)](https://packagist.org/packages/huangdijia/smsease)
+[![Total Downloads](https://poser.pugx.org/huangdijia/smsease/d/total.png)](https://packagist.org/packages/huangdijia/smsease)
+[![GitHub license](https://img.shields.io/github/license/huangdijia/smsease)](https://github.com/huangdijia/smsease)
+
 ## Installation
 
 ~~~bash
