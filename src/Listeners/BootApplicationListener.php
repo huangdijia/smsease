@@ -11,12 +11,13 @@ declare(strict_types=1);
  */
 namespace Huangdijia\Smsease\Listeners;
 
-use Huangdijia\Smsease\Contracts\GatewayInterface;
 use Huangdijia\Smsease\Smsease;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
+use Overtrue\EasySms\Contracts\GatewayInterface;
 
 class BootApplicationListener implements ListenerInterface
 {
@@ -31,6 +32,12 @@ class BootApplicationListener implements ListenerInterface
      * @var ConfigInterface
      */
     protected $config;
+
+    /**
+     * @Inject
+     * @var StdoutLoggerInterface
+     */
+    protected $logger;
 
     /**
      * 返回一个该监听器要监听的事件数组，可以同时监听多个事件.
@@ -56,12 +63,15 @@ class BootApplicationListener implements ListenerInterface
                 $gatewayClass = $config['__gateway__'] ?? '';
 
                 if (! class_exists($gatewayClass) || ! in_array(GatewayInterface::class, class_implements($gatewayClass))) {
+                    $this->logger->warning(sprintf('[smsease] Gateway %s[%s] is invalid gateway!', $gatewayClass, $name));
                     continue;
                 }
 
                 $smsease->extend($name, function ($config) use ($gatewayClass) {
                     return new $gatewayClass($config);
                 });
+
+                $this->logger->debug(sprintf('[smsease] Gateway %s[%s] registered by %s.', $gatewayClass, $name, __CLASS__));
             }
         }));
     }
